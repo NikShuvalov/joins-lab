@@ -10,8 +10,25 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="shuvalov.nikita.joinslab.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/macys_emp_butt"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="Employee's working at Macy's"/>
+
+    <Button
+        android:id="@+id/boston_comp_butt"
+        android:layout_below="@id/macys_emp_butt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/boston_butt"/>
+
+    <Button
+        android:id="@+id/highest_paid_butt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/boston_comp_butt"
+        android:text="Get highest paid employee"/>
+
+
 </RelativeLayout>
