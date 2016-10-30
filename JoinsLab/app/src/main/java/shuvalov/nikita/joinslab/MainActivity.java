@@ -2,19 +2,39 @@ package shuvalov.nikita.joinslab;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    Button highestPaidButton, macysEmpButton, bostonCompButton;
+    RecyclerView mRecyclerView;
+    List<String> displayedNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setUpDatabaseInfo();
+        if (!EmployeeSQLOpenHelper.getInstance(this).dataAlreadyPopulated()){ //keeps tables from populating if they aren't empty.
+            setUpDatabaseInfo();
+        }
+
+        startFunctioning();
+
+
+
     }
+
 
     public void setUpDatabaseInfo(){
         EmployeeSQLOpenHelper openHelper = EmployeeSQLOpenHelper.getInstance(this);
+
 
         openHelper.insertEmployeeRow(new Employee("123-04-5678", "John", "Smith",  1973, "NY"));
         openHelper.insertEmployeeRow(new Employee("123-04-5679", "David", "McWill", 1982, "Seattle"));
@@ -33,8 +53,47 @@ public class MainActivity extends AppCompatActivity {
         openHelper.insertJobRow(new Job("123-04-5683","Believe", 158, 6));
         openHelper.insertJobRow(new Job("123-04-5684","Macys", 200, 8));
         openHelper.insertJobRow(new Job("123-04-5685","Stop", 299, 12));
+    }
 
 
+
+    public void startFunctioning(){
+        highestPaidButton = (Button)findViewById(R.id.highest_paid_butt);
+        macysEmpButton = (Button)findViewById(R.id.macys_emp_butt);
+        bostonCompButton = (Button)findViewById(R.id.boston_comp_butt);
+
+        displayedNames = new ArrayList<>();
+
+        mRecyclerView = (RecyclerView)findViewById(R.id.results_recycler);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        final ResultRecyclerAdapter recyclerAdapter = new ResultRecyclerAdapter(displayedNames);
+
+
+        highestPaidButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                displayedNames = EmployeeSQLOpenHelper.getInstance(MainActivity.this).getHighestPaidEmployee();
+                recyclerAdapter.replaceData(displayedNames);
+            }
+        });
+
+        macysEmpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                displayedNames = EmployeeSQLOpenHelper.getInstance(MainActivity.this).getMacyEmployees();
+                recyclerAdapter.replaceData(displayedNames);
+            }
+        });
+
+        bostonCompButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                displayedNames = EmployeeSQLOpenHelper.getInstance(MainActivity.this).getBostonComps();
+                recyclerAdapter.replaceData(displayedNames);
+            }
+        });
+        mRecyclerView.setAdapter(recyclerAdapter);
     }
 }
 
